@@ -8,6 +8,7 @@
 	<indoorviewer></indoorviewer>
 	<div id="issue-entry" class="modal issue-modal issue-modal-bg">
 		<div class="modal-content issue-modal-content">
+			<h2 class="form-header">Issue report form</h2>
 			<span id="issue-modal-close" class="close">&times;</span>
 			<form>
 				<label>Issue: </label>
@@ -31,15 +32,6 @@
 				<label>Priority: </label>
 				<br />
 				<input type="range" min="1" max="100" id="issue-priority">
-				<!--
-				<input type="radio" id="p-low" name="priority" value="low">
-				<label for="p-low">Minor</label>
-				<input type="radio" id="p-high" name="priority" value="high" checked>
-				<label for="p-high">Major</label>
-				-->
-				<br/>
-				<label>Image</label>
-				<input type="file">
 				<br/>
 
 				<!-- Radio button for POV selection -->
@@ -51,6 +43,44 @@
 			<button id="save-issue">Save Issue</button>
 		</div>
 	</div>
+
+	<div id="instruction-entry" class="modal instruction-modal instruction-modal-bg">
+		<div class="modal-content instruction-modal-content">
+			<h2 class="form-header">Instruction add form</h2>
+			<span id="instruction-modal-close" class="close">&times;</span>
+			<form>
+				<label>Instruction title: </label>
+				<br/>
+				<input id="instruction-title" class="text-style" name="Title" type="text" placeholder="Instructions on what machine/item/room?"/>
+				<br/>
+				<label>Description: </label>
+				<br/>
+				<textarea id="instruction-description" class="text-style" name="message" rows="8"
+				cols="30" placeholder="Some textual instruction for example phases of the operating of machine"> </textarea>
+				<br />
+				<label>Category: </label>
+				<br />
+				<select id="instruction-category">
+					<option>General safety</option>
+					<option>Biological</option>
+					<option>Chemical</option>
+					<option>Ergonomic</option>
+				</select>
+				<br/>
+				<label>Image</label>
+				<input type="file">
+				<br/>
+
+				<!-- Radio button for POV selection -->
+				<input type="checkbox" id="point-of-view" name="scales" checked>
+				<label for="point-of-view">Use current point of view</label>
+
+			</form>
+			<!--<button id="save-issue">Save Issue</button>-->
+			<button id="save-instruction">Save Instruction</button>
+		</div>
+	</div>
+
 	<div id="issue-details" class="detail-modal">
 		<div class="detail-content">
 			<div class="row">

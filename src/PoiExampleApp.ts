@@ -7,6 +7,8 @@ import {
 } from "@navvis/indoorviewer";
 import {IssueReportingContextMenuEntry} from "./IssueReportingContextMenuEntry";
 import {IssueReportingDialog} from "./IssueReportingDialog";
+import {EducationalMenuEntry} from "./EducationalMenuEntry";
+import {EducationalDialog} from "./EducationalDialog";
 
 /**
  * The main class for an example app which deals with POI objects shows the capabilities of the
@@ -35,6 +37,10 @@ export class PoiExampleApp
 	private poiMaintenanceResolvedType: PoiTypeInterface;
 
 	private poiMaintenanceDeferredType: PoiTypeInterface;
+	
+	private instructionMenuItem: SidebarMenuItemInterface;
+
+	private poiEducationalType: PoiTypeInterface;
 
 	private poiMaintenanceType: PoiTypeInterface;
 
@@ -63,12 +69,17 @@ export class PoiExampleApp
 				this.poiMaintenanceType = poiTypes[0];
 				this.poiMaintenanceResolvedType = poiTypes[1];
 				this.poiMaintenanceDeferredType = poiTypes[2];
+				this.poiEducationalType = poiTypes[3];
 				this.deferredMenuItem = this.buildDeferredMaintenanceIssuesMenu();
 				this.resolvedMenuItem = this.buildResolvedMaintenanceIssuesMenu();
+				this.instructionMenuItem = this.buildInstructionMenu();
 				this.ivApi.ui.sidebarMenuService.items.push(this.deferredMenuItem,
-					this.resolvedMenuItem);
+					this.resolvedMenuItem, this.instructionMenuItem);
 				const entry = new IssueReportingContextMenuEntry(this.ivApi,
 					this.poiMaintenanceDeferredType);
+
+				// For later to use with instruction poi's
+				const ownEntry = new EducationalMenuEntry(this.ivApi, this.poiEducationalType);
 				entry.completionHandler = () => this.refreshState();
 				this.ivApi.poi.service.onPoiClick.connect(
 					(poi) => this.handleMaintenanceIssueClick(poi));
@@ -265,7 +276,7 @@ export class PoiExampleApp
 	 */
 	private buildResolvedMaintenanceIssuesMenu(): SidebarMenuItemInterface
 	{
-		const icon: IconInfoInterface = {className: "material-icons", ligature: "mood", path: ""};
+		const icon: IconInfoInterface = {className: "material-icons", ligature: "done", path: ""};
 		const items: SidebarMenuItemInterface[] = [];
 		return {
 			title: "Maintenance Resolved Issues",
@@ -287,7 +298,7 @@ export class PoiExampleApp
 	{
 		const icon: IconInfoInterface = {
 			className: "material-icons",
-			ligature: "child_care",
+			ligature: "report_problem",
 			path: ""
 		};
 		const items: SidebarMenuItemInterface[] = [];
@@ -303,6 +314,28 @@ export class PoiExampleApp
 		};
 	}
 
+	//@returns {SidebarMenuItemInterface} The SidebarMenuItemInterface used to create the menu.
+	
+	private buildInstructionMenu(): SidebarMenuItemInterface
+	{
+		const icon: IconInfoInterface = {
+			className: "material-icons",
+			ligature: "book",
+			path: ""
+		};
+		const items: SidebarMenuItemInterface[] = [];
+		return {
+			title: "Educational POI's",
+			icon: icon,
+			isPreviewIconVisible: () => true,
+			isFullscreen: false,
+			isVisible: () => true,
+			items: items,
+			onClick: () => true,
+			template: "./menu.html"
+		};
+	}
+	
 	/**
 	 * Build the items for the maintenance issue menu.
 	 */
@@ -310,7 +343,7 @@ export class PoiExampleApp
 	{
 		const icon: IconInfoInterface = {
 			className: "material-icons",
-			ligature: "child_care",
+			ligature: "report_problem",
 			path: ""
 		};
 		const items: SidebarMenuItemInterface[] = [];
@@ -342,7 +375,7 @@ export class PoiExampleApp
 	{
 		const icon: IconInfoInterface = {
 			className: "material-icons",
-			ligature: "mood",
+			ligature: "done",
 			path: ""
 		};
 		const items: SidebarMenuItemInterface[] = [];
