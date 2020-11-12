@@ -9,6 +9,7 @@ import {IssueReportingContextMenuEntry} from "./IssueReportingContextMenuEntry";
 import {IssueReportingDialog} from "./IssueReportingDialog";
 import {EducationalMenuEntry} from "./EducationalMenuEntry";
 import {EducationalDialog} from "./EducationalDialog";
+import { httpCall } from "./emailservice";
 
 /**
  * The main class for an example app which deals with POI objects shows the capabilities of the
@@ -24,7 +25,7 @@ export class PoiExampleApp
 {
 	private readonly LOCALE: string = "en";
 
-	private readonly MAINTENANCE_POI: string = "Maintenance";
+	private readonly MAINTENANCE_POI: string = "Safety Walks";
 
 	private readonly MAINTENANCE_RESOLVED_POI: string = "Maintenance Resolved";
 
@@ -55,10 +56,10 @@ export class PoiExampleApp
 	 */
 	public start(): void
 	{
-		Promise.all([this.fetchPoiType(this.MAINTENANCE_POI),
+		Promise.all([//this.fetchPoiType(this.MAINTENANCE_POI),
 		             this.fetchPoiType(this.MAINTENANCE_RESOLVED_POI),
 					 this.fetchPoiType(this.MAINTENANCE_ISSUE_POI),
-					 //this.fetchPoiType(this.INSTRUCTION_POI)
+					 this.fetchPoiType(this.INSTRUCTION_POI)
 					])
 			.then((poiTypes: PoiTypeInterface[]) =>
 			{
@@ -71,10 +72,10 @@ export class PoiExampleApp
 					return;
 				}
 
-				this.poiMaintenanceType = poiTypes[0];
-				this.poiMaintenanceResolvedType = poiTypes[1];
-				this.poiMaintenanceDeferredType = poiTypes[2];
-				//this.poiEducationalType = poiTypes[3];
+				//this.poiMaintenanceType = poiTypes[0];
+				this.poiMaintenanceResolvedType = poiTypes[0];
+				this.poiMaintenanceDeferredType = poiTypes[1];
+				this.poiEducationalType = poiTypes[2];
 				this.deferredMenuItem = this.buildDeferredMaintenanceIssuesMenu();
 				this.resolvedMenuItem = this.buildResolvedMaintenanceIssuesMenu();
 				this.instructionMenuItem = this.buildInstructionMenu();
@@ -82,10 +83,11 @@ export class PoiExampleApp
 					this.resolvedMenuItem, this.instructionMenuItem);
 				const entry = new IssueReportingContextMenuEntry(this.ivApi,
 					this.poiMaintenanceDeferredType);
-
-				// For later to use with instruction poi's
-				const ownEntry = new EducationalMenuEntry(this.ivApi, this.poiEducationalType);
+				
+				//const iEntry = new EducationalMenuEntry(this.ivApi,
+				//	this.poiEducationalType);
 				entry.completionHandler = () => this.refreshState();
+				//iEntry.completionHandler = () => this.refreshState();
 				this.ivApi.poi.service.onPoiClick.connect(
 					(poi) => this.handleMaintenanceIssueClick(poi));
 				this.ivApi.poi.service.onPoiSave.connect((poi) => this.handleExternalPoiSave(poi));
@@ -125,8 +127,10 @@ export class PoiExampleApp
 	 */
 	private handleExternalPoiSave(poi: PoiInterface): void
 	{
-		const poiTypes = [this.poiMaintenanceType.id, this.poiMaintenanceDeferredType.id,
-		                  this.poiMaintenanceResolvedType.id];
+		console.log(this.poiMaintenanceType)
+		const poiTypes = [this.poiMaintenanceDeferredType.id,
+						  this.poiMaintenanceResolvedType.id,
+						  this.poiEducationalType.id];
 		if (poiTypes.indexOf(poi.poiType.id) !== -1)
 		{
 			this.ivApi.poi.service.closePoi();
@@ -143,6 +147,8 @@ export class PoiExampleApp
 		this.ivApi.poi.service.refreshPois();
 		this.buildDeferredMaintenanceMenuItems();
 		this.buildResolvedMaintenanceMenuItems();
+		//
+		this.buildInstructionMenu();
 		this.highlightPendingMaintenanceIssues();
 		this.unhighlightResolvedMaintenanceIssues();
 	}
@@ -155,11 +161,14 @@ export class PoiExampleApp
 	 */
 	private handleMaintenanceIssueClick(poi: PoiInterface): boolean
 	{
+		if (poi.poiType.name[this.LOCALE] == this.MAINTENANCE_ISSUE_POI) {
+
 		this.hideMaintenanceDetailView();
 		this.ivApi.poi.service.closePoi();
 		this.ivApi.ui.sidebarMenuService.closeMenu();
-		const maintenanceTypeIds = [this.poiMaintenanceType.id, this.poiMaintenanceDeferredType.id,
-									this.poiMaintenanceResolvedType.id];
+		const maintenanceTypeIds = [this.poiMaintenanceDeferredType.id,
+									this.poiMaintenanceResolvedType.id,
+								    this.poiEducationalType.id];
 		console.log(maintenanceTypeIds.indexOf(poi.poiType.id))
 		if (maintenanceTypeIds.indexOf(poi.poiType.id) === -1)
 		{
@@ -168,6 +177,9 @@ export class PoiExampleApp
 		this.ivApi.poi.service.goToPoi(poi).catch((e) => console.error(e));
 		this.showMaintenanceDetailView(poi);
 		return true;
+	} else {
+		return false;
+	}
 	}
 
 	/**
@@ -212,6 +224,7 @@ export class PoiExampleApp
 	 */
 	private resolveMaintenancePoi(poi: PoiInterface): void
 	{
+		console.log("resolved: ", poi.poiType.id)
 		poi.poiType = this.poiMaintenanceResolvedType;
 		this.savePoi(poi).catch((e) => console.error(e));
 	}
@@ -274,6 +287,13 @@ export class PoiExampleApp
 		return this.ivApi.poi.repository.findAll()
 			.then((pois) => pois.filter(
 				(poi) => poi.poiType.name[this.LOCALE] === this.MAINTENANCE_RESOLVED_POI));
+	}
+
+	private fetchInstructionPois(): Promise<PoiInterface[]>
+	{
+		return this.ivApi.poi.repository.findAll()
+			.then((pois) => pois.filter(
+				(poi) => poi.poiType.name[this.LOCALE] === this.INSTRUCTION_POI));
 	}
 
 	/**
@@ -341,6 +361,37 @@ export class PoiExampleApp
 			template: "./menu.html"
 		};
 	}
+
+	/*
+	private buildInstructionItems(): void
+	{
+		const icon: IconInfoInterface = {
+			className: "material-icons",
+			ligature: "add_instruction",
+			path: ""
+		};
+		const items: SidebarMenuItemInterface[] = [];
+
+		this.fetchInstructionPois().then((pois) =>
+		{
+			this.deferredMenuItem.items = pois.map((poi) => ({
+				title: poi.title,
+				icon: icon,
+				isPreviewIconVisible: () => true,
+				isFullscreen: false,
+				isVisible: () => true,
+				items: items,
+				onClick: () =>
+				{
+					this.ivApi.ui.sidebarMenuService.closeMenu();
+					this.ivApi.poi.service.goToPoi(poi).catch((e) => console.error(e));
+				},
+				template: ""
+			}));
+			this.deferredMenuItem.template = pois.length === 0 ? "./menu.html" : "";
+		});
+	}
+	*/
 	
 	/**
 	 * Build the items for the maintenance issue menu.
@@ -446,6 +497,12 @@ export class PoiExampleApp
 			btn.innerText = "Resolve";
 			btn.onclick = () =>
 			{
+				const data = {
+					"type": "resolve-issue",
+					"title": poi.title,
+					"description": poi.description
+				}
+				httpCall(data)
 				this.resolveMaintenancePoi(poi);
 				this.hideMaintenanceDetailView();
 				this.refreshState();

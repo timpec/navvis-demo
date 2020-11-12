@@ -61,7 +61,7 @@ export class EducationalDialog
 		//httpCall(instructionData);
 
 		const useCurrentPov = (<HTMLInputElement>document.getElementById("point-of-view")).checked;
-		//this.completionHandler(title, description, category, useCurrentPov);
+		this.completionHandler(title, description, category, useCurrentPov);
 		this.hideDialog();
 	}
 

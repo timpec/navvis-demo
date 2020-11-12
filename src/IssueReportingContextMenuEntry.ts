@@ -60,6 +60,7 @@ export class IssueReportingContextMenuEntry extends CustomLayer
 		const poi = this.ivApi.poi.repository.create();
 		poi.titles[this.LOCALE] = title;
 		poi.descriptions[this.LOCALE] = description;
+		poi.customData = priority;
 		poi.icon = undefined;
 		const localToGlobal = this.ivApi.transform.service.localToGlobal;
 		poi.globalLocation = localToGlobal.transform(cursorPosition.location);
@@ -70,6 +71,7 @@ export class IssueReportingContextMenuEntry extends CustomLayer
 		poi.orientation = cursorPosition.orientation;
 		console.log(poi)
 		poi.poiType = this.issueType;
+		console.log(poi.poiType)
 
 		if (useCurrentPov)
 		{

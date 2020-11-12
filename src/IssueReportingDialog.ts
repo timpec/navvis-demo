@@ -65,7 +65,7 @@ export class IssueReportingDialog
 		httpCall(issueData);
 
 		const useCurrentPov = (<HTMLInputElement>document.getElementById("point-of-view")).checked;
-		//this.completionHandler(title, description, category, priority, useCurrentPov);
+		this.completionHandler(title, description, category, priority, useCurrentPov);
 		this.hideDialog();
 	}
 
@@ -81,6 +81,7 @@ export class IssueReportingDialog
 
 	private formatToJSON(title: string, description: string, category: string, priority: string): any {
 		const newJSON = {
+			"type": "new-issue",
 			"title": title,
 			"description": description,
 			"category": category,
