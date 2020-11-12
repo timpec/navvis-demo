@@ -58,7 +58,7 @@ export class EducationalDialog
 
 		const instructionData = this.formatToJSON(title,description,category)
 		// POST request to backend to send email with data
-		httpCall(instructionData);
+		//httpCall(instructionData);
 
 		const useCurrentPov = (<HTMLInputElement>document.getElementById("point-of-view")).checked;
 		//this.completionHandler(title, description, category, useCurrentPov);

@@ -29,6 +29,8 @@ export class PoiExampleApp
 	private readonly MAINTENANCE_RESOLVED_POI: string = "Maintenance Resolved";
 
 	private readonly MAINTENANCE_ISSUE_POI: string = "Maintenance Deferred";
+	
+	private readonly INSTRUCTION_POI: string = "Instruction";
 
 	private deferredMenuItem: SidebarMenuItemInterface;
 
@@ -55,10 +57,13 @@ export class PoiExampleApp
 	{
 		Promise.all([this.fetchPoiType(this.MAINTENANCE_POI),
 		             this.fetchPoiType(this.MAINTENANCE_RESOLVED_POI),
-		             this.fetchPoiType(this.MAINTENANCE_ISSUE_POI)])
+					 this.fetchPoiType(this.MAINTENANCE_ISSUE_POI),
+					 //this.fetchPoiType(this.INSTRUCTION_POI)
+					])
 			.then((poiTypes: PoiTypeInterface[]) =>
 			{
-				if (poiTypes.indexOf(undefined) !== -1)
+				console.log(poiTypes)
+				if (poiTypes.indexOf(undefined) !== -1) //!
 				{
 					window.alert(
 						"Please create the " + this.MAINTENANCE_ISSUE_POI + " and " +
@@ -69,7 +74,7 @@ export class PoiExampleApp
 				this.poiMaintenanceType = poiTypes[0];
 				this.poiMaintenanceResolvedType = poiTypes[1];
 				this.poiMaintenanceDeferredType = poiTypes[2];
-				this.poiEducationalType = poiTypes[3];
+				//this.poiEducationalType = poiTypes[3];
 				this.deferredMenuItem = this.buildDeferredMaintenanceIssuesMenu();
 				this.resolvedMenuItem = this.buildResolvedMaintenanceIssuesMenu();
 				this.instructionMenuItem = this.buildInstructionMenu();
@@ -154,7 +159,8 @@ export class PoiExampleApp
 		this.ivApi.poi.service.closePoi();
 		this.ivApi.ui.sidebarMenuService.closeMenu();
 		const maintenanceTypeIds = [this.poiMaintenanceType.id, this.poiMaintenanceDeferredType.id,
-		                            this.poiMaintenanceResolvedType.id];
+									this.poiMaintenanceResolvedType.id];
+		console.log(maintenanceTypeIds.indexOf(poi.poiType.id))
 		if (maintenanceTypeIds.indexOf(poi.poiType.id) === -1)
 		{
 			return false;

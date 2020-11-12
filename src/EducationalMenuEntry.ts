@@ -7,7 +7,6 @@ import {
 	PoiInterface,
 	PoiTypeInterface
 } from "@navvis/indoorviewer";
-// Todo: educationaldialog..
 import {EducationalDialog} from "./EducationalDialog";
 import {Euler} from "three";
 
@@ -26,7 +25,7 @@ export class EducationalMenuEntry extends CustomLayer
 	{
 		return {
 			name: "Add instruction",
-			icon: undefined,
+			icon: "book",
 			callback: () =>
 			{
 				this.createInstructions();

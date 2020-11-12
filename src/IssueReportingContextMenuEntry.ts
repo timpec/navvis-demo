@@ -68,6 +68,7 @@ export class IssueReportingContextMenuEntry extends CustomLayer
 		poi.datasetLocation = cursorPosition.datasetLocation;
 		poi.datasetOrientation = cursorPosition.datasetOrientation;
 		poi.orientation = cursorPosition.orientation;
+		console.log(poi)
 		poi.poiType = this.issueType;
 
 		if (useCurrentPov)
