@@ -73,6 +73,7 @@ export class IssueReportingContextMenuEntry extends CustomLayer
 		poi.poiType = this.issueType;
 		console.log(poi.poiType)
 
+		/*
 		if (useCurrentPov)
 		{
 			// Set a custom POV
@@ -84,6 +85,7 @@ export class IssueReportingContextMenuEntry extends CustomLayer
 				.setFromEuler(new Euler(currentViewDirection.lon, currentViewDirection.lat, 0))
 			poi.setPointOfView(currentLocation, viewDirectionQuaternion, currentFov, undefined);
 		}
+		*/
 
 		return this.ivApi.poi.repository.save(poi).then((pois) =>
 		{

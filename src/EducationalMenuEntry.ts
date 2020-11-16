@@ -69,7 +69,10 @@ export class EducationalMenuEntry extends CustomLayer
 		poi.datasetOrientation = cursorPosition.datasetOrientation;
 		poi.orientation = cursorPosition.orientation;
 		poi.poiType = this.educationalType;
+		console.log(poi);
 
+		/*
+		// Breaks the save to the server
 		if (useCurrentPov)
 		{
 			// Set a custom POV
@@ -81,6 +84,7 @@ export class EducationalMenuEntry extends CustomLayer
 				.setFromEuler(new Euler(currentViewDirection.lon, currentViewDirection.lat, 0))
 			poi.setPointOfView(currentLocation, viewDirectionQuaternion, currentFov, undefined);
 		}
+		*/
 
 		return this.ivApi.poi.repository.save(poi).then((pois) =>
 		{

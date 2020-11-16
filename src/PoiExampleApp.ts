@@ -127,7 +127,7 @@ export class PoiExampleApp
 	 */
 	private handleExternalPoiSave(poi: PoiInterface): void
 	{
-		console.log(this.poiMaintenanceType)
+		console.log(poi);
 		const poiTypes = [this.poiMaintenanceDeferredType.id,
 						  this.poiMaintenanceResolvedType.id,
 						  this.poiEducationalType.id];
@@ -147,6 +147,7 @@ export class PoiExampleApp
 		this.ivApi.poi.service.refreshPois();
 		this.buildDeferredMaintenanceMenuItems();
 		this.buildResolvedMaintenanceMenuItems();
+		this.buildInstructionItems();
 		//
 		this.buildInstructionMenu();
 		this.highlightPendingMaintenanceIssues();
@@ -351,7 +352,7 @@ export class PoiExampleApp
 		};
 		const items: SidebarMenuItemInterface[] = [];
 		return {
-			title: "Educational POI's",
+			title: "Instruction POI's",
 			icon: icon,
 			isPreviewIconVisible: () => true,
 			isFullscreen: false,
@@ -362,19 +363,20 @@ export class PoiExampleApp
 		};
 	}
 
-	/*
+	
 	private buildInstructionItems(): void
 	{
 		const icon: IconInfoInterface = {
 			className: "material-icons",
-			ligature: "add_instruction",
+			ligature: "book",
 			path: ""
 		};
 		const items: SidebarMenuItemInterface[] = [];
 
+		console.log(this.fetchInstructionPois());
 		this.fetchInstructionPois().then((pois) =>
 		{
-			this.deferredMenuItem.items = pois.map((poi) => ({
+			this.instructionMenuItem.items = pois.map((poi) => ({
 				title: poi.title,
 				icon: icon,
 				isPreviewIconVisible: () => true,
@@ -388,10 +390,11 @@ export class PoiExampleApp
 				},
 				template: ""
 			}));
-			this.deferredMenuItem.template = pois.length === 0 ? "./menu.html" : "";
+			console.log(this.instructionMenuItem)
+			this.instructionMenuItem.template = pois.length === 0 ? "./menu.html" : "";
 		});
 	}
-	*/
+	
 	
 	/**
 	 * Build the items for the maintenance issue menu.
