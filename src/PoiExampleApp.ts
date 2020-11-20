@@ -7,9 +7,8 @@ import {
 } from "@navvis/indoorviewer";
 import {IssueReportingContextMenuEntry} from "./IssueReportingContextMenuEntry";
 import {IssueReportingDialog} from "./IssueReportingDialog";
-import {EducationalMenuEntry} from "./EducationalMenuEntry";
-import {EducationalDialog} from "./EducationalDialog";
 import { httpCall } from "./emailservice";
+//import { checkForUnnotified } from "./NotificationCheck";
 
 /**
  * The main class for an example app which deals with POI objects shows the capabilities of the
@@ -32,6 +31,8 @@ export class PoiExampleApp
 	private readonly MAINTENANCE_ISSUE_POI: string = "Maintenance Deferred";
 	
 	private readonly INSTRUCTION_POI: string = "Instruction";
+	
+	private readonly NOTIFIED_TAG: string = "POI Notified";
 
 	private deferredMenuItem: SidebarMenuItemInterface;
 
@@ -45,7 +46,7 @@ export class PoiExampleApp
 
 	private poiEducationalType: PoiTypeInterface;
 
-	private poiMaintenanceType: PoiTypeInterface;
+	//private poiMaintenanceType: PoiTypeInterface;
 
 	constructor(private ivApi: ApiInterface, private baseUrl: string)
 	{
@@ -64,7 +65,7 @@ export class PoiExampleApp
 			.then((poiTypes: PoiTypeInterface[]) =>
 			{
 				console.log(poiTypes)
-				if (poiTypes.indexOf(undefined) !== -1) //!
+				if (poiTypes.indexOf(undefined) !== -1)
 				{
 					window.alert(
 						"Please create the " + this.MAINTENANCE_ISSUE_POI + " and " +
@@ -373,7 +374,6 @@ export class PoiExampleApp
 		};
 		const items: SidebarMenuItemInterface[] = [];
 
-		console.log(this.fetchInstructionPois());
 		this.fetchInstructionPois().then((pois) =>
 		{
 			this.instructionMenuItem.items = pois.map((poi) => ({
@@ -410,6 +410,7 @@ export class PoiExampleApp
 
 		this.fetchDeferredMaintenancePois().then((pois) =>
 		{
+			this.checkForUnnotified(pois);
 			this.deferredMenuItem.items = pois.map((poi) => ({
 				title: poi.title,
 				icon: icon,
@@ -474,6 +475,25 @@ export class PoiExampleApp
 			this.ivApi.poi.service.goToPoi(savedPoi).catch((e) => console.error(e));
 			return savedPoi;
 		});
+	}
+
+	private checkForUnnotified(pois: PoiInterface[]) {
+		for (let i in pois) {
+			console.log(pois[i].customData);
+			if (pois[i].customData != this.NOTIFIED_TAG) {
+				let data = {
+					type: "new-issue",
+					title: pois[i].title,
+					description: pois[i].description
+				}
+				httpCall(data)
+				console.log("Notified for POI: ", pois[i].title);
+
+				pois[i].customData = this.NOTIFIED_TAG;
+				this.savePoi(pois[i])
+				console.log(pois[i].customData)
+			}
+		}
 	}
 
 	/**

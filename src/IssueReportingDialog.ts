@@ -13,7 +13,7 @@ export class IssueReportingDialog
 
 	public priority: string = "";
 
-	public completionHandler: (title: string, description: string, category: string, priority: string, useCurrentPov: boolean) => void;
+	public completionHandler: (title: string, description: string, category: string, priority: string) => void; //useCurrentPov: boolean
 
 	private htmlModalElement: HTMLElement;
 
@@ -64,8 +64,8 @@ export class IssueReportingDialog
 		// POST request to backend to send email with data
 		httpCall(issueData);
 
-		const useCurrentPov = (<HTMLInputElement>document.getElementById("point-of-view")).checked;
-		this.completionHandler(title, description, category, priority, useCurrentPov);
+		//const useCurrentPov = (<HTMLInputElement>document.getElementById("point-of-view")).checked;
+		this.completionHandler(title, description, category, priority); //, useCurrentPov
 		this.hideDialog();
 	}
 
