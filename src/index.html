@@ -31,7 +31,12 @@
 				<br />
 				<label>Priority: </label>
 				<br />
-				<input type="range" min="1" max="100" id="issue-priority">
+				<select id="issue-priority">
+					<option>Low</option>
+					<option selected="selected" >Medium</option>
+					<option>High</option>
+				</select>
+				<br/>
 				<br/>
 
 				<!-- Radio button for POV selection -->
@@ -109,6 +114,10 @@
 					</div>
 					<div class="btn-group" role="group">
 						<button id="issue-resolve" type="button" class="btn btn-secondary">Resolve
+						</button>
+					</div>
+					<div class="btn-group" role="group">
+						<button id="issue-status" type="button" class="btn btn-secondary">Fix started
 						</button>
 					</div>
 					<div class="btn-group" role="group">

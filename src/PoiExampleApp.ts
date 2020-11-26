@@ -190,6 +190,8 @@ export class PoiExampleApp
 	 */
 	private showMaintenanceDetailView(poi: PoiInterface): void
 	{
+		this.checkPoiStatus(poi);
+
 		const modal = document.getElementById("issue-details");
 		modal.style.display = "block";
 
@@ -198,6 +200,9 @@ export class PoiExampleApp
 
 		const editBtn = document.getElementById("issue-edit");
 		editBtn.onclick = () => this.showPoiEditDialog(poi);
+
+		const statusBtn = document.getElementById("issue-status");
+		statusBtn.onclick = () => this.changePoiStatus(poi);
 
 		this.configureResolutionBtn(poi);
 
@@ -227,6 +232,13 @@ export class PoiExampleApp
 	private resolveMaintenancePoi(poi: PoiInterface): void
 	{
 		console.log("resolved: ", poi.poiType.id)
+		poi.importance = 3;
+		const data = {
+			"type": "resolve-issue",
+			"title": poi.title,
+			"description": poi.description
+		}
+		httpCall(data)
 		poi.poiType = this.poiMaintenanceResolvedType;
 		this.savePoi(poi).catch((e) => console.error(e));
 	}
@@ -520,16 +532,34 @@ export class PoiExampleApp
 			btn.innerText = "Resolve";
 			btn.onclick = () =>
 			{
-				const data = {
-					"type": "resolve-issue",
-					"title": poi.title,
-					"description": poi.description
-				}
-				httpCall(data)
+				this.changePoiStatus(poi)
 				this.resolveMaintenancePoi(poi);
 				this.hideMaintenanceDetailView();
 				this.refreshState();
 			};
+		}
+	}
+
+	private checkPoiStatus(poi: PoiInterface) {
+		const statusBtn = document.getElementById("issue-status");
+		console.log(poi.importance)
+		if (poi.importance == 2) {
+			statusBtn.style.display = "none";
+		}
+	}
+
+	private changePoiStatus(poi: PoiInterface) {
+		if (poi.importance == 1) {
+			poi.importance = 2;
+			const data = {
+				"type": "fix-issue",
+				"title": poi.title,
+				"description": poi.description
+			}
+			httpCall(data)
+			const modal = document.getElementById("issue-details");
+			modal.style.display = "none"
+			this.savePoi(poi);
 		}
 	}
 }

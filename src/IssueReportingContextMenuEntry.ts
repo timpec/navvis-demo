@@ -65,6 +65,7 @@ export class IssueReportingContextMenuEntry extends CustomLayer
 		poi.descriptions[this.LOCALE] = description;
 		poi.customData = this.NOTIFIED_TAG;
 		poi.icon = undefined;
+		poi.importance = 1; // Used for status. 1 = reported, 2 = Being resolved, 3 = Resolved
 		const localToGlobal = this.ivApi.transform.service.localToGlobal;
 		poi.globalLocation = localToGlobal.transform(cursorPosition.location);
 		poi.globalOrientation =
