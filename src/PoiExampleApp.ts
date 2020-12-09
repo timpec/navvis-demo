@@ -7,6 +7,7 @@ import {
 } from "@navvis/indoorviewer";
 import {IssueReportingContextMenuEntry} from "./IssueReportingContextMenuEntry";
 import {IssueReportingDialog} from "./IssueReportingDialog";
+//import {resolveNote} from "./resolveNote";
 import { httpCall } from "./emailservice";
 //import { checkForUnnotified } from "./NotificationCheck";
 
@@ -248,6 +249,23 @@ export class PoiExampleApp
 	 * @param {PoiInterface} poi The POI that needs to be edited.
 	 */
 	private showPoiEditDialog(poi: PoiInterface): void
+	{
+		const dialog = new IssueReportingDialog();
+		dialog.title = poi.title;
+
+		dialog.description = poi.description !== undefined ? poi.description : "";
+
+		dialog.completionHandler = (title, description, category, priority) =>
+		{
+			poi.title = title;
+			poi.description = description;
+			this.savePoi(poi).then((poi) => this.showMaintenanceDetailView(poi)
+			).catch((e) => console.error(e));
+		};
+		dialog.showDialog();
+	}
+
+	private showPoiResolveDialog(poi: PoiInterface): void
 	{
 		const dialog = new IssueReportingDialog();
 		dialog.title = poi.title;
