@@ -7,20 +7,8 @@ import {
 } from "@navvis/indoorviewer";
 import {IssueReportingContextMenuEntry} from "./IssueReportingContextMenuEntry";
 import {IssueReportingDialog} from "./IssueReportingDialog";
-//import {resolveNote} from "./resolveNote";
 import { httpCall } from "./emailservice";
-//import { checkForUnnotified } from "./NotificationCheck";
 
-/**
- * The main class for an example app which deals with POI objects shows the capabilities of the
- * Indoorviewer API. The app demonstrates the following capabilities of the api.
- * - Creation of special POIs using the context menu.
- * - Usage of onClick event to show your own POI Detail view and POI Editor.
- * - Highlights a list of POIs of a special type, and unhighlight all other POIs.
- * - Deletion of a POI.
- * - Usage of gotoPoi to move to a certain POI.
- * - Usage of the SidebarMenu API to show Custom Sidebar Menus.
- */
 export class PoiExampleApp
 {
 	private readonly LOCALE: string = "en";
@@ -47,8 +35,6 @@ export class PoiExampleApp
 
 	private poiEducationalType: PoiTypeInterface;
 
-	//private poiMaintenanceType: PoiTypeInterface;
-
 	constructor(private ivApi: ApiInterface, private baseUrl: string)
 	{
 	}
@@ -58,7 +44,7 @@ export class PoiExampleApp
 	 */
 	public start(): void
 	{
-		Promise.all([//this.fetchPoiType(this.MAINTENANCE_POI),
+		Promise.all([
 		             this.fetchPoiType(this.MAINTENANCE_RESOLVED_POI),
 					 this.fetchPoiType(this.MAINTENANCE_ISSUE_POI),
 					 this.fetchPoiType(this.INSTRUCTION_POI)
@@ -74,7 +60,6 @@ export class PoiExampleApp
 					return;
 				}
 
-				//this.poiMaintenanceType = poiTypes[0];
 				this.poiMaintenanceResolvedType = poiTypes[0];
 				this.poiMaintenanceDeferredType = poiTypes[1];
 				this.poiEducationalType = poiTypes[2];
@@ -86,10 +71,7 @@ export class PoiExampleApp
 				const entry = new IssueReportingContextMenuEntry(this.ivApi,
 					this.poiMaintenanceDeferredType);
 				
-				//const iEntry = new EducationalMenuEntry(this.ivApi,
-				//	this.poiEducationalType);
 				entry.completionHandler = () => this.refreshState();
-				//iEntry.completionHandler = () => this.refreshState();
 				this.ivApi.poi.service.onPoiClick.connect(
 					(poi) => this.handleMaintenanceIssueClick(poi));
 				this.ivApi.poi.service.onPoiSave.connect((poi) => this.handleExternalPoiSave(poi));
@@ -97,11 +79,7 @@ export class PoiExampleApp
 			});
 	}
 
-	/**
-	 * Highlight all pending maintenance issues (having the POI type "Maintenance" and "Maintenance
-	 * Deferred").
-	 *
-	 */
+	
 	private highlightPendingMaintenanceIssues(): void
 	{
 		this.fetchDeferredMaintenancePois().then((pois) =>
@@ -110,10 +88,7 @@ export class PoiExampleApp
 		});
 	}
 
-	/**
-	 * Unhighlight all the resolved maintenance issues.
-	 *
-	 */
+	
 	private unhighlightResolvedMaintenanceIssues(): void
 	{
 		this.fetchResolvedMaintenancePois().then((pois) =>
@@ -140,17 +115,13 @@ export class PoiExampleApp
 		}
 	}
 
-	/**
-	 * Refresh the current state of the app (refresh POIs, rebuild menus, highlight/unhighlight
-	 * maintenance issues).
-	 */
+	
 	private refreshState(): void
 	{
 		this.ivApi.poi.service.refreshPois();
 		this.buildDeferredMaintenanceMenuItems();
 		this.buildResolvedMaintenanceMenuItems();
 		this.buildInstructionItems();
-		//
 		this.buildInstructionMenu();
 		this.highlightPendingMaintenanceIssues();
 		this.unhighlightResolvedMaintenanceIssues();
@@ -217,9 +188,7 @@ export class PoiExampleApp
 		description.innerText = poi.description !== undefined ? poi.description : "";
 	}
 
-	/**
-	 * Close the custom detail view for maintenance POI.
-	 */
+	
 	private hideMaintenanceDetailView(): void
 	{
 		const modal = document.getElementById("issue-details");
@@ -371,8 +340,6 @@ export class PoiExampleApp
 			template: "./menu.html"
 		};
 	}
-
-	//@returns {SidebarMenuItemInterface} The SidebarMenuItemInterface used to create the menu.
 	
 	private buildInstructionMenu(): SidebarMenuItemInterface
 	{
@@ -426,9 +393,7 @@ export class PoiExampleApp
 	}
 	
 	
-	/**
-	 * Build the items for the maintenance issue menu.
-	 */
+	
 	private buildDeferredMaintenanceMenuItems(): void
 	{
 		const icon: IconInfoInterface = {
@@ -459,9 +424,7 @@ export class PoiExampleApp
 		});
 	}
 
-	/**
-	 * Build the items for the resolved maintenance issue menu.
-	 */
+	
 	private buildResolvedMaintenanceMenuItems(): void
 	{
 		const icon: IconInfoInterface = {
@@ -526,9 +489,7 @@ export class PoiExampleApp
 		}
 	}
 
-	/**
-	 * Change the Resolution button from Resolve to Delete, depending upon the type of the POI.
-	 */
+	
 	private configureResolutionBtn(poi: PoiInterface): void
 	{
 		const btn = document.getElementById("issue-resolve");

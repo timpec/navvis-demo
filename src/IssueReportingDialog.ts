@@ -61,11 +61,9 @@ export class IssueReportingDialog
 		const priority = (<HTMLInputElement>document.getElementById("issue-priority")).value;
 
 		const issueData = this.formatToJSON(title,description,category,priority)
-		// POST request to backend to send email with data
 		httpCall(issueData);
 
-		//const useCurrentPov = (<HTMLInputElement>document.getElementById("point-of-view")).checked;
-		this.completionHandler(title, description, category, priority); //, useCurrentPov
+		this.completionHandler(title, description, category, priority);
 		this.hideDialog();
 	}
 

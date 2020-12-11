@@ -7,7 +7,7 @@ import {PoiExampleApp} from "./PoiExampleApp";
 
 class TestApp
 {
-	private baseUrl: string = "https://nvdev-0.iv.navvis.com/";
+	//private baseUrl: string = "https://nvdev-0.iv.navvis.com/";
 	private baseUrl2: string = "https://metropolia.esitevr.com/safetywalk/iv";
 
 	constructor()

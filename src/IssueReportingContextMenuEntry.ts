@@ -58,14 +58,14 @@ export class IssueReportingContextMenuEntry extends CustomLayer
 	 * @returns {Promise<PoiInterface>} A promise with the saved POI object from the server.
 	 */
 	private createPoi(title: string, description: string, category: string, priority: string,
-		cursorPosition: CursorDataInterface): Promise<PoiInterface> //, useCurrentPov: boolean
+		cursorPosition: CursorDataInterface): Promise<PoiInterface>
 	{
 		const poi = this.ivApi.poi.repository.create();
 		poi.titles[this.LOCALE] = title;
 		poi.descriptions[this.LOCALE] = description;
 		poi.customData = this.NOTIFIED_TAG;
 		poi.icon = undefined;
-		poi.importance = 1; // Used for status. 1 = reported, 2 = Being resolved, 3 = Resolved
+		poi.importance = 1;
 		const localToGlobal = this.ivApi.transform.service.localToGlobal;
 		poi.globalLocation = localToGlobal.transform(cursorPosition.location);
 		poi.globalOrientation =
@@ -76,20 +76,6 @@ export class IssueReportingContextMenuEntry extends CustomLayer
 		console.log(poi)
 		poi.poiType = this.issueType;
 		console.log(poi.poiType)
-
-		/*
-		if (useCurrentPov)
-		{
-			// Set a custom POV
-			const cameraPosition = this.ivApi.view.mainView.getCamera().position;
-			const currentLocation = this.ivApi.transform.service.localToGlobal.transform(cameraPosition);
-			const currentFov = this.ivApi.view.mainView.getFov();
-			const currentViewDirection = this.ivApi.view.mainView.currViewingDir;
-			const viewDirectionQuaternion = new this.ivApi.lib.THREE.Quaternion()
-				.setFromEuler(new Euler(currentViewDirection.lon, currentViewDirection.lat, 0))
-			poi.setPointOfView(currentLocation, viewDirectionQuaternion, currentFov, undefined);
-		}
-		*/
 
 		return this.ivApi.poi.repository.save(poi).then((pois) =>
 		{
